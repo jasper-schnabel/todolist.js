@@ -1,0 +1,25 @@
+{% extends 'layout.twig' %}
+
+{% block body %}
+    <h1>TODOs</h1>
+    <form action="/todo/add" method="post">
+        <input type="text" name="task" placeholder="What should I do?..." />
+        <select name="priority">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+        </select>
+        <input type="submit">
+    </form>
+    <hr/>
+    <ul class="list">
+        {% for todo in todos %}
+            <li>
+                <input type="checkbox" name="{{ todo.id }}" onchange=""/>
+                {{ todo.task }}
+                <button onclick="" class="trash"><i class="far fa-trash-alt"></i></button>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
