@@ -1,25 +1,81 @@
 {% extends 'layout.twig' %}
 
 {% block body %}
-    <h1>TODOs</h1>
-    <form action="/todo/add" method="post">
-        <input type="text" name="task" placeholder="What should I do?..." />
-        <select name="priority">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-        </select>
-        <input type="submit">
-    </form>
-    <hr/>
-    <ul class="list">
-        {% for todo in todos %}
-            <li>
-                <input type="checkbox" name="{{ todo.id }}" onchange=""/>
-                {{ todo.task }}
-                <button onclick="" class="trash"><i class="far fa-trash-alt"></i></button>
-            </li>
-        {% endfor %}
-    </ul>
+  <h1>TODOs</h1>
+  <h2>A simple TODO list build with Node.js, Epress.js and SQLite.</h2>
+  <form action="/todo/add" method="post">
+    <input class="interaction" type="text" required name="task" placeholder="What should I do?..."/>
+    <select class="interaction" name="priority">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+    </select>
+    <input class="interaction" type="submit" value="Send">
+  </form>
+  <ul class="list">
+    {% for todo in todos %}
+  <li>
+        <div>
+          <input class="checker" type="checkbox" name="{{ todo.id }}" {% if todo.done == true %} checked {% endif %} onchange="updateTodo({{ todo.id }})"/>
+          <input class="todo-id-{{ todo.id }} todo-text" type="text" readonly value="{{ todo.task }}"/
+          {% if todo.priority == 4 %}
+              style="color: #2E112D"
+          {% elseif todo.priority == 3 %}
+              style="color: #B01C33"
+          {% elseif todo.priority == 2 %}
+              style="color: #EF4339"
+          {% elseif todo.priority == 1 %}
+              style="color: #FAC213"
+          {% endif %}>
+        </div>
+        <div class='actions'>
+          <!-- <button onclick="editTodo({{ todo.id }})" class="edit">Edit</button> -->
+          <button onclick="editTodo({{ todo.id }})" class="edit-id-{{ todo.id }} edit">Edit</button>
+          <button onclick="removeTodo({{ todo.id }})" class="trash"><i class="far fa-trash-alt"></i></button>
+        </div>
+      </li>
+    {% endfor %}
+  </ul>
+  <script>
+    // send request to delete a todo based on the given id
+    function removeTodo(id) {
+      fetch(`/todo/delete/${id}`, { method: 'DELETE'})
+  
+      console.log(document.querySelector(`input[name='${id}']`).parentElement.parentElement)
+      document.querySelector(`input[name='${id}']`).parentElement.parentElement.remove()
+    }
+  
+    // send request to update a todo based on the given id
+    function updateTodo(id) {
+      fetch(`/todo/done/${id}`, { method: 'PUT' })
+    }
+
+    // send request to edit a todo based on the given id
+    function editTodo(id) {
+      const todo = document.querySelector(`.todo-id-${id}`)
+      const button = document.querySelector(`.edit-id-${id}`)
+
+      todo.addEventListener('keydown', (e) => {
+        if (e.keyCode == 13) {
+          todo.setAttribute('readonly', 'readonly');
+          button.innerHTML = 'Edit';
+          todo.blur();
+          
+          fetch(`todo/edit/${id}`, { method:'PUT', body: JSON.stringify({task: todo.value}), headers: { 'content-type': 'application/json' }});
+        }
+      });
+     
+      if (button.innerHTML == 'Edit') {
+        todo.removeAttribute('readonly');
+        todo.focus();
+        button.innerHTML = 'Save';
+      } else {
+        todo.setAttribute('readonly', 'readonly');
+        button.innerHTML = 'Edit';
+
+        fetch(`todo/edit/${id}`, { method:'PUT', body: JSON.stringify({task: todo.value}), headers: { 'content-type': 'application/json' }});
+      }
+    }
+  </script>
 {% endblock %}

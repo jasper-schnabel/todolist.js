@@ -1,19 +1,133 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
+:root {
+  --dark: #00332a;
+  --light: #fdffc4;
+  --green: #006654;
+  --purple: #8C6BC2;
+  --orange: #ff7750;
 
-a {
-  color: #00B7FF; }
+  --font-title: "Playfair Display", sans-serif;
+  --font-body: "Assistant", sans-serif;
+}
+
+* {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  color: var(--light);
+  background: linear-gradient(120deg, var(--green), var(--purple));
+}
+
+h1 {
+  font-family: var(--font-title);
+  font-size: 6rem;
+  font-weight: bold;
+  text-align: center;
+  margin: 2rem 0;
+}
+
+h2 {
+  font-family: var(--font-title);
+  font-size: 2rem;
+  text-align: center;
+}
+
+form {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+  padding: 1.6rem;
+}
+
+.interaction {
+  font-weight: bold;
+  background: var(--light);
+  color: var(--purple);
+  margin: 1rem;
+  padding: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+}
+
+::placeholder {
+  color: var(--purple);
+}
+
+.interaction:focus {
+  outline: solid 0.15rem var(--purple);
+}
 
 .list {
-  max-width: 800px;
+  margin-left: 20rem;
+  margin-right: 20rem;
   position: relative;
-  list-style: none; }
-  .list li {
-    padding: 5px; }
+  list-style: none;
+}
+
+ul {
+  background: var(--light);
+  padding: 2rem;
+  border-radius: 0.5rem;
+}
+
+li {
+  color: var(--dark);
+  font-family: var(--font-body);
+  font-weight: bold;
+  margin: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+li:nth-of-type(2n+2) {
+  background: rgba(0, 102, 84, 0.04);
+  padding-right: 1rem;
+}
+
+li:nth-of-type(2n+1) {
+  background: var(--light);
+  padding-right: 1rem;
+}
+
+.todo-text {
+  border: none; 
+  border-radius: 0.1rem;
+  background: inherit;
+  width: 45rem;
+  padding: 1rem;
+}
+
+.todo-text:focus {
+  outline: solid 0.15rem var(--purple);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+}
 
 .trash {
-  position: absolute;
-  right: 0; }
+  color: var(--dark);
+  background: var(--orange);
+  border: none;
+  border-radius: 0.3rem;
+  padding: 0.6rem;
+}
 
-/*# sourceMappingURL=style.css.map */
+.edit {
+  color: var(--dark);
+  background: var(--orange);
+  border: none;
+  border-radius: 0.3rem;
+  padding: 0.6rem;
+  margin-right: 1rem;
+}
+
+.checker {
+  margin-right: 1rem;
+  margin-left: 1rem;
+}
