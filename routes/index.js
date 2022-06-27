@@ -1,20 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../src/Database.js');
 
-// home page
-router.get('/', (req, res) => {
-  let sql = 'SELECT * FROM todo ORDER BY priority';
-  db.all(sql, (err, rows) => {
-    if (err) {
-      console.error(err.message); // cannot query database
-      throw err;
-    } else {
-      res.render('index', { todos: rows });
-      console.log('Data successfully queried.');
-      console.log(rows); // for debugging/testing
-    }
-  });
+// get todos
+router.get('/', async (req, res) => {
+  const todos = await req.models.Todos.findAll({ order: [['priority', 'ASC']] });
+  res.render('index', { todos: todos })
+  console.log('Data successfully queried.');
+  console.log("All todos:", JSON.stringify(todos, null, 2)); // just for debugging
 });
 
 module.exports = router;

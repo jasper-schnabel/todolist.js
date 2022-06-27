@@ -1,58 +1,30 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../src/Database.js');
+const Sequelize = require('sequelize');
 
-// add new todo
-router.post('/add', (req, res) => {
-  let sql = 'INSERT INTO todo (task, priority, done) VALUES (?, ?, ?)';
-  db.run(sql, [req.body.task, parseInt(req.body.priority), false ], (err) => {
-    if (err) {
-      console.error(err.message); // cannot insert into database
-      throw err;
-    } else {
-      console.log('Data successfully inserted.');
-      res.redirect('/');
-    }
-  });
+// create new todo
+router.post('/add', async (req, res) => {
+  await req.models.Todos.create({ task: req.body.task, priority: parseInt(req.body.priority), done: false });
+  console.log('Data successfully inserted.');
+  res.redirect('/');
 });
 
 // set todo as done
-router.put('/done/:id', (req) => {
-  let sql = 'UPDATE todo SET done = ((done | true) - (done & true)) WHERE id = ?';
-  db.run(sql, [req.params.id], (err) => {
-    if (err) {
-      console.error(err.message); // cannot update done value
-      throw err;
-    } else {
-      console.log('Todo successfully set to done.');
-    }
-  })
+router.put('/done/:id', async (req) => {
+  await req.models.Todos.update({ done: Sequelize.literal('NOT done') }, { where: { id: req.params.id } });
+  console.log('Todo successfully set to done.');
 });
 
 // edit todo
-router.put('/edit/:id', (req) => {
-  let sql = 'UPDATE todo SET task = ? WHERE id = ?';
-  db.run(sql, [req.body.task, req.params.id], (err) => {
-    if (err) {
-      console.error(err.message); // cannot edit todo
-      throw err;
-    } else {
-      console.log('Todo successfully edited.');
-    }
-  })
+router.put('/edit/:id', async (req) => {
+  await req.models.Todos.update({ task: req.body.task }, { where: { id: req.params.id } });
+  console.log('Todo successfully edited.');
 });
 
 // delete todo
-router.delete('/delete/:id', (req) => {
-  let sql = 'DELETE FROM todo WHERE id = ?';
-  db.run(sql, [req.params.id], (err) => {
-    if (err) {
-      console.error(err.message); // cannot delete todo
-      throw err;
-    } else {
-      console.log('Todo successfully deleted.');
-    }
-  })
+router.delete('/delete/:id', async (req) => {
+  await req.models.Todos.destroy({ where: { id: req.params.id } });
+  console.log('Todo successfully deleted.');
 });
 
 module.exports = router;
