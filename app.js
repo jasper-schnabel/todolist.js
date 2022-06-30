@@ -6,6 +6,7 @@ const logger = require('morgan');
 const Todos = require('./src/Database.js');
 const indexRouter = require('./routes/index');
 const todoRouter = require('./routes/todo');
+const subtodoRouter = require('./routes/subtodo');
 
 const app = express();
 
@@ -20,12 +21,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
-  req.models = { Todos:  Todos };
+  req.models = { Todos };
   next();
-})
+});
 
 app.use('/', indexRouter);
 app.use('/todo', todoRouter);
+app.use('/todo/:id/subtodo', subtodoRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -33,7 +35,7 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

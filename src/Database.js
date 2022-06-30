@@ -13,7 +13,7 @@ const sequelize = new Sequelize({
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
-})()
+})();
 
 const Todos = sequelize.define('todos', {
   id: {
@@ -29,11 +29,16 @@ const Todos = sequelize.define('todos', {
   },
   done: {
     type: DataTypes.BOOLEAN
+  },
+  parent: {
+    type: DataTypes.INTEGER
   }
 }, {
-  tableName: 'todos'
+  freezeTableName: true
 });
 
-Todos.sync({ force: true })
+(async () => {
+  await Todos.sync({ force: true });
+})();
 
-module.exports = Todos
+module.exports = Todos;

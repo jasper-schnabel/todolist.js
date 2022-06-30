@@ -33,6 +33,7 @@ h1 {
 h2 {
   font-family: var(--font-title);
   font-size: 2rem;
+  font-weight: normal;
   text-align: center;
 }
 
@@ -43,7 +44,13 @@ form {
   padding: 1.6rem;
 }
 
-.interaction {
+.subtodo-form {
+  margin-bottom: 0;
+  margin-left: 5rem;
+  padding: 0;
+}
+
+.interaction, .subtodo-interaction {
   font-weight: bold;
   background: var(--light);
   color: var(--purple);
@@ -53,12 +60,22 @@ form {
   border-radius: 0.5rem;
 }
 
-::placeholder {
-  color: var(--purple);
-}
-
 .interaction:focus {
   outline: solid 0.15rem var(--purple);
+}
+
+.subtodo-interaction {
+  margin: 0;
+  margin-right: 1rem;
+  border: solid;
+}
+
+.subtodo-interaction:focus {
+  outline: none;
+}
+
+::placeholder {
+  color: var(--purple);
 }
 
 .list {
@@ -93,15 +110,19 @@ li:nth-of-type(2n+1) {
   padding-right: 1rem;
 }
 
-.todo-text {
+.todo-text, .subtodo-text {
   border: none; 
   border-radius: 0.1rem;
   background: inherit;
-  width: 45rem;
+  width: 43rem;
   padding: 1rem;
 }
 
-.todo-text:focus {
+.subtodo-text {
+  width: 46rem;
+}
+
+.todo-text:focus, .subtodo-text:focus {
   outline: solid 0.15rem var(--purple);
 }
 
@@ -110,15 +131,7 @@ li:nth-of-type(2n+1) {
   align-items: center;
 }
 
-.trash {
-  color: var(--dark);
-  background: var(--orange);
-  border: none;
-  border-radius: 0.3rem;
-  padding: 0.6rem;
-}
-
-.edit {
+.todo-trash, .subtodo-trash  {
   color: var(--dark);
   background: var(--orange);
   border: none;
@@ -127,7 +140,37 @@ li:nth-of-type(2n+1) {
   margin-right: 1rem;
 }
 
-.checker {
+.subtodo-trash {
+  margin-right: 0;
+}
+
+.todo-edit {
+  color: var(--dark);
+  background: var(--orange);
+  border: none;
+  border-radius: 0.3rem;
+  padding: 0.6rem;
+  margin-right: 1rem;
+}
+
+.todo-subtodo {
+  color: var(--dark);
+  background: var(--orange);
+  border: none;
+  border-radius: 0.3rem;
+  padding: 0.6rem;
+}
+
+.todo-checker {
   margin-right: 1rem;
   margin-left: 1rem;
+}
+
+.subtodo-checker {
+  margin-right: 1rem;
+  margin-left: 4rem;
+}
+
+.item-done {
+  text-decoration: line-through;
 }

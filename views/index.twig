@@ -2,7 +2,7 @@
 
 {% block body %}
   <h1>TODOs</h1>
-  <h2>A simple TODO list build with Node.js, Epress.js and SQLite.</h2>
+  <h2>A simple TODO list build with Node.js, Epress.js and Sequelize.js (SQLite ORM).</h2>
   <form action="/todo/add" method="post">
     <input class="interaction" type="text" required name="task" placeholder="What should I do?..."/>
     <select class="interaction" name="priority">
@@ -13,69 +13,66 @@
     </select>
     <input class="interaction" type="submit" value="Send">
   </form>
+  {% if todos != [] %}
   <ul class="list">
     {% for todo in todos %}
-  <li>
-        <div>
-          <input class="checker" type="checkbox" name="{{ todo.id }}" {% if todo.done == true %} checked {% endif %} onchange="updateTodo({{ todo.id }})"/>
-          <input class="todo-id-{{ todo.id }} todo-text" type="text" readonly value="{{ todo.task }}"/
-          {% if todo.priority == 4 %}
-              style="color: #2E112D"
-          {% elseif todo.priority == 3 %}
-              style="color: #B01C33"
-          {% elseif todo.priority == 2 %}
-              style="color: #EF4339"
-          {% elseif todo.priority == 1 %}
-              style="color: #FAC213"
-          {% endif %}>
-        </div>
-        <div class='actions'>
-          <!-- <button onclick="editTodo({{ todo.id }})" class="edit">Edit</button> -->
-          <button onclick="editTodo({{ todo.id }})" class="edit-id-{{ todo.id }} edit">Edit</button>
-          <button onclick="removeTodo({{ todo.id }})" class="trash"><i class="far fa-trash-alt"></i></button>
-        </div>
-      </li>
+        <li id="list-item">
+          <div>
+            <input class="todo-checker" type="checkbox" name="{{ todo.id }}" {% if todo.done == true %} checked {% endif %} onchange="updateTodo({{ todo.id }})"/>
+            {% if todo.done %}
+              <input class="todo-id-{{ todo.id }} todo-delete-id-{{ todo.id }} todo-text item-done" type="text" readonly value="{{ todo.task }}"
+            {% else %}
+              <input class="todo-id-{{ todo.id }} todo-delete-id-{{ todo.id }} todo-text" type="text" readonly value="{{ todo.task }}"
+            {% endif %}
+            {% if todo.priority == 4 %}
+              style="color: #2E112D;"
+            {% elseif todo.priority == 3 %}
+              style="color: #B01C33;"
+            {% elseif todo.priority == 2 %}
+              style="color: #EF4339;"
+            {% elseif todo.priority == 1 %}
+              style="color: #FAC213;"
+            {% endif %}/>
+          </div>
+          <div class="actions">
+            <button onclick="editTodo({{ todo.id }})" class="todo-edit-id-{{ todo.id }} todo-edit">Edit</button>
+            <button onclick="deleteTodo({{ todo.id }})" class="todo-trash"><i class="far fa-trash-alt"></i></button>
+            <button onclick="addSubTodo({{ todo.id }})" class="subtodo-id-{{ todo.id }} todo-subtodo">Sub Todo</button>
+          </div>
+        </li>
+    {% for todo in todo.subs %}
+        <li id="list-item">
+          <div>
+            <input class="subtodo-checker" type="checkbox" name="{{ todo.id }}" {% if todo.done == true %} checked {% endif %} onchange="updateSubtodo({{ todo.id }}, {{ todo.parent }})"/>
+            {% if todo.done %}
+              <input class="todo-id-{{ todo.id }} todo-delete-id-{{ todo.parent }} subtodo-text item-done" type="text" readonly value="{{ todo.task }}"
+            {% else %}
+              <input class="todo-id-{{ todo.id }} todo-delete-id-{{ todo.parent }} subtodo-text" type="text" readonly value="{{ todo.task }}"
+            {% endif %}
+            {% if todo.priority == 4 %}
+              style="color: #2E112D;"
+            {% elseif todo.priority == 3 %}
+              style="color: #B01C33;"
+            {% elseif todo.priority == 2 %}
+              style="color: #EF4339;"
+            {% elseif todo.priority == 1 %}
+              style="color: #FAC213;"
+            {% endif %}/>
+          </div>
+          <div class="actions">
+            <button onclick="editSubtodo({{ todo.id }}, {{ todo.parent }})" class="todo-edit-id-{{ todo.id }} todo-edit">Edit</button>
+            <button onclick="deleteSubtodo({{ todo.id }}, {{ todo.parent }})" class="subtodo-trash"><i class="far fa-trash-alt"></i></button>
+          </div>
+        </li>
+      {% endfor %}
+        <form action="/todo/{{ todo.id }}/subtodo/add" method="post" class="subtodo-form subtodo-form-id-{{ todo.id }}" style="display: none;">
+          <input class="subtodo-interaction" type="text" required name="task" placeholder="What should I do?..."/>
+          <input class="subtodo-interaction" type="hidden" name="parent" value="{{ todo.id }}"/>
+          <input class="subtodo-interaction" type="submit" value="Send">
+        </form>
     {% endfor %}
   </ul>
-  <script>
-    // send request to delete a todo based on the given id
-    function removeTodo(id) {
-      fetch(`/todo/delete/${id}`, { method: 'DELETE'})
-  
-      console.log(document.querySelector(`input[name='${id}']`).parentElement.parentElement)
-      document.querySelector(`input[name='${id}']`).parentElement.parentElement.remove()
-    }
-  
-    // send request to update a todo based on the given id
-    function updateTodo(id) {
-      fetch(`/todo/done/${id}`, { method: 'PUT' })
-    }
-
-    // send request to edit a todo based on the given id
-    function editTodo(id) {
-      const todo = document.querySelector(`.todo-id-${id}`)
-      const button = document.querySelector(`.edit-id-${id}`)
-
-      todo.addEventListener('keydown', (e) => {
-        if (e.keyCode == 13) {
-          todo.setAttribute('readonly', 'readonly');
-          button.innerHTML = 'Edit';
-          todo.blur();
-          
-          fetch(`todo/edit/${id}`, { method:'PUT', body: JSON.stringify({task: todo.value}), headers: { 'content-type': 'application/json' }});
-        }
-      });
-     
-      if (button.innerHTML == 'Edit') {
-        todo.removeAttribute('readonly');
-        todo.focus();
-        button.innerHTML = 'Save';
-      } else {
-        todo.setAttribute('readonly', 'readonly');
-        button.innerHTML = 'Edit';
-
-        fetch(`todo/edit/${id}`, { method:'PUT', body: JSON.stringify({task: todo.value}), headers: { 'content-type': 'application/json' }});
-      }
-    }
-  </script>
+  {% endif %}
+  <script src="/javascript/todoActions.js"></script>
+  <script src="/javascript/subtodoActions.js"></script>
 {% endblock %}
