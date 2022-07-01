@@ -18,7 +18,7 @@
     {% for todo in todos %}
         <li id="list-item">
           <div>
-            <input class="todo-checker" type="checkbox" name="{{ todo.id }}" {% if todo.done == true %} checked {% endif %} onchange="updateTodo({{ todo.id }})"/>
+            <input class="todo-checker" type="checkbox" name="{{ todo.id }}" {% if todo.done == true %} checked {% endif %} onclick="updateTodo({{ todo.id }})"/>
             {% if todo.done %}
               <input class="todo-id-{{ todo.id }} todo-delete-id-{{ todo.id }} todo-text item-done" type="text" readonly value="{{ todo.task }}"
             {% else %}
@@ -43,7 +43,7 @@
     {% for todo in todo.subs %}
         <li id="list-item">
           <div>
-            <input class="subtodo-checker" type="checkbox" name="{{ todo.id }}" {% if todo.done == true %} checked {% endif %} onchange="updateSubtodo({{ todo.id }}, {{ todo.parent }})"/>
+            <input class="subtodo-checker" type="checkbox" name="{{ todo.id }}" {% if todo.done == true %} checked {% endif %} onclick="updateSubtodo({{ todo.id }}, {{ todo.parent }})"/>
             {% if todo.done %}
               <input class="todo-id-{{ todo.id }} todo-delete-id-{{ todo.parent }} subtodo-text item-done" type="text" readonly value="{{ todo.task }}"
             {% else %}

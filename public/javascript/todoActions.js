@@ -17,7 +17,7 @@ function editTodo(id) {
       button.innerHTML = 'Edit';
       todo.blur();
 
-      fetch(`todo/edit/${id}`, { method:'PUT', body: JSON.stringify({task: todo.value}), headers: { 'content-type': 'application/json' }});
+      fetch(`todo/edit/${id}`, { method:'PUT', body: JSON.stringify({ task: todo.value }), headers: { 'content-type': 'application/json' }});
     }
   });
 
@@ -29,7 +29,7 @@ function editTodo(id) {
     todo.setAttribute('readonly', 'readonly');
     button.innerHTML = 'Edit';
 
-    fetch(`todo/edit/${id}`, { method:'PUT', body: JSON.stringify({task: todo.value}), headers: { 'content-type': 'application/json' }});
+    fetch(`todo/edit/${id}`, { method:'PUT', body: JSON.stringify({ task: todo.value }), headers: { 'content-type': 'application/json' }});
   }
 }
 

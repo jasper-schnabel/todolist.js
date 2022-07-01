@@ -12,5 +12,6 @@
 - [x] Display with two loops in views/index.twig (everything ordered correctly)
 - [x] Style: Remove <ul> if
 - [x] Style: New sub field
+- [x] Feature: If all subs done mark parent as done
 
 - [ ] Fix: sequelize.sync()

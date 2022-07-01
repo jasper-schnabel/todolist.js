@@ -1,9 +1,17 @@
 // send request to update a subtodo based on the given id
 function updateSubtodo(sid, id) {
   const todo = document.querySelector(`.todo-id-${sid}`);
+  const parentTodo = document.querySelector(`.todo-id-${id}`);
   todo.classList.toggle('item-done');
 
-  fetch(`/todo/${id}/subtodo/done/${sid}`, { method: 'PUT' });
+  fetch(`/todo/${id}/subtodo/done/${sid}`, { method: 'PUT', body: JSON.stringify({ parentId: id }), headers: { 'content-type': 'application/json' }})
+    .then(res => res.json())
+    .then(allDone => {
+      if (allDone.allDone) {
+        parentTodo.classList.add('item-done');
+        parentTodo.previousElementSibling.checked = true;
+      }
+    });
 }
 
 // send request to edit a subtodo based on the given id
@@ -17,7 +25,7 @@ function editSubtodo(sid, id) {
       button.innerHTML = 'Edit';
       todo.blur();
 
-      fetch(`todo/${id}/subtodo/edit/${sid}`, { method:'PUT', body: JSON.stringify({task: todo.value}), headers: { 'content-type': 'application/json' }});
+      fetch(`todo/${id}/subtodo/edit/${sid}`, { method:'PUT', body: JSON.stringify({ task: todo.value }), headers: { 'content-type': 'application/json' }});
     }
   });
 
@@ -29,7 +37,7 @@ function editSubtodo(sid, id) {
     todo.setAttribute('readonly', 'readonly');
     button.innerHTML = 'Edit';
 
-    fetch(`todo/${id}/subtodo/edit/${sid}`, { method:'PUT', body: JSON.stringify({task: todo.value}), headers: { 'content-type': 'application/json' }});
+    fetch(`todo/${id}/subtodo/edit/${sid}`, { method:'PUT', body: JSON.stringify({ task: todo.value }), headers: { 'content-type': 'application/json' }});
   }
 }
 

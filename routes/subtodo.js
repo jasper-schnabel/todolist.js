@@ -12,10 +12,23 @@ router.post('/add', async (req, res) => {
 });
 
 // set subtodo as done
-router.put('/done/:id', async (req) => {
+router.put('/done/:id', async (req, res) => {
   await req.models.Todos.update({ done: Sequelize.literal('NOT done') }, { where: { id: req.params.id } });
+  const done = await req.models.Todos.findAll({ where: { parent: req.body.parentId } });
+  const allDone = done.reduce((acc, cur) => {
+    if (cur.done === false) {
+      return false;
+    } else {
+      return acc;
+    }
+  }, true);
+
+  if (allDone) {
+    await req.models.Todos.update({ done: true }, { where: { id: req.body.parentId } });
+  }
 
   console.log('Subtodo successfully set to done.');
+  res.json({ allDone });
 });
 
 // edit subtodo
