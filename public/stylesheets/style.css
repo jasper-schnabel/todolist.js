@@ -87,6 +87,7 @@ form {
 
 ul {
   background: var(--light);
+  margin-bottom: 4rem;
   padding: 2rem;
   border-radius: 0.5rem;
 }
